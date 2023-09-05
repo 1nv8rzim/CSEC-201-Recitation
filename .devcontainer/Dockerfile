@@ -16,5 +16,8 @@ RUN apt-get update && apt-get install -y \
 # Set the working directory inside the container
 WORKDIR /workspace
 
+# Add current repository to the container
+ADD . /workspace
+
 # Use bash shell
 SHELL ["/bin/bash", "-c"]
