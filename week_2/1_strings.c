@@ -14,3 +14,11 @@ int main() {
 
     return 0;
 }
+
+int solution(char* str) {
+    int i = 0;
+    while (str[i] != '\0') {
+        i++;
+    }
+    return i;
+}
