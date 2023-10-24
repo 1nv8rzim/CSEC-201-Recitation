@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <asm_file>"
+    exit 1
+fi
+
+asm_file="$1"
+
+if [ ! -f "$asm_file" ]; then
+    echo "Error: The specified assembly file '$asm_file' does not exist."
+    exit 1
+fi
+
+asm_basename="${asm_file%.asm}"
+
+nasm -f elf "$asm_file" -o "$asm_basename.o"
+
+ld -m elf_i386 -s -o "$asm_basename" "$asm_basename.o"
+
+"./$asm_basename"
+
+rm -f "$asm_basename.o" "$asm_basename"
