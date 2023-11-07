@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Check if an assembly file was provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <file.asm>"
+    exit 1
+fi
+
+# Extract the base name from the provided file
+filename=$(basename -- "$1")
+basename="${filename%.*}"
+
+# Assemble the ASM file into an object file
+nasm -f elf32 -o "$basename.o" "$1"
+if [ $? -ne 0 ]; then
+    echo "Assembly failed."
+    exit 2
+fi
+
+# Link the object file into an executable
+ld -m elf_i386 -o "$basename" "$basename.o" -lc --dynamic-linker /lib/ld-linux.so.2
+if [ $? -ne 0 ]; then
+    echo "Linking failed."
+    exit 3
+fi
+
+# Run the executable
+./"$basename"
+ret_value=$?
+
+# Clean up: remove the object file and executable
+rm "$basename.o" "$basename"
+
+# Exit with the return value of the executable
+exit $ret_value
